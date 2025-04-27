@@ -4,7 +4,7 @@
   "name": "Blockly Block Search",
   "version": "1.0",
   "description": "Search and highlight blocks in App Inventor workspace",
-  "permissions": ["scripting", "all_urls"],
+  "permissions": ["scripting"],
   "action": {
     "default_popup": "popup/popup.html"
   },
