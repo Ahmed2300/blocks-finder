@@ -1,7 +1,24 @@
 
-console.log("Blockly Search content script loaded.");
+console.log("Blockly Search content script loaded. Waiting for handshake...");
 
 // --- Helper Functions ---
+
+// Send a ready message to the popup
+function sendReadyMessage() {
+  chrome.runtime.sendMessage({ action: "contentScriptReady" });
+}
+
+// --- Message Listener ---
+
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  console.log("Blockly Search: Message received", msg);
+  if (msg.action === "handshake") {
+    sendReadyMessage()
+    return true
+  }
+  // Handle other potential actions here
+  return false; // No asynchronous response expected for other actions
+});
 
 // Safely get the main Blockly workspace
 function getWorkspace() {
@@ -147,17 +164,3 @@ async function searchAndHighlightBlocks(query) {
   console.log(`Blockly Search: Found ${matchCount} matches for "${query}"`);
   return { matchCount: matchCount };
 }
-
-// --- Message Listener ---
-
-chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
-  console.log("Blockly Search: Message received", msg);
-  if (msg.action === 'searchBlocks') {
-    const result = await searchAndHighlightBlocks(msg.text);
-    // Send back the match count (or other data) if needed
-    sendResponse({ status: 'Search processed', matches: result.matchCount });
-    return true; // Indicates an asynchronous response (optional but good practice)
-  }
-  // Handle other potential actions here
-  return false; // No asynchronous response expected for other actions
-});
