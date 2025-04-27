@@ -1,0 +1,78 @@
+
+<!doctype html>
+<html>
+<head>
+  <title>Blockly Search</title>
+  <meta charset="utf-8">
+  <style>
+    body {
+      margin: 0;
+      padding: 15px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #F0F0F0; /* Light gray background */
+      min-width: 250px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    input[type="text"] {
+      flex-grow: 1;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #FFFFFF; /* White input background */
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease-in-out;
+    }
+    input[type="text"]:focus {
+      border-color: #008080; /* Teal accent on focus */
+    }
+    button {
+      padding: 8px 15px;
+      background-color: #008080; /* Teal accent background */
+      color: #FFFFFF; /* White text */
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    button:hover {
+      background-color: #006666; /* Darker teal on hover */
+    }
+    button:active {
+      background-color: #005050; /* Even darker teal on active */
+    }
+    /* Simple search icon SVG */
+    .search-icon {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        stroke-width: 2;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <input id="searchInput" type="text" placeholder="Search blocks…"/>
+    <button id="searchBtn" title="Search">
+      <svg class="search-icon" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
