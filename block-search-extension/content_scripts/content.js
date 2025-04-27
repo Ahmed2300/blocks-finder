@@ -7,6 +7,7 @@ console.log("Blockly Search content script loaded.");
 function getWorkspace() {
   // App Inventor might have Blockly under different global structures
   if (typeof Blockly !== 'undefined' && Blockly.getMainWorkspace) {
+    console.log("Blockly Search: Found Blockly.getMainWorkspace()");
     return Blockly.getMainWorkspace();
   }
   // Add checks for other potential global names if needed (e.g., for older AI versions)
@@ -16,9 +17,13 @@ function getWorkspace() {
 
 // Get searchable text from a block
 function getBlockText(block) {
-  if (!block) return '';
+  if (!block) {
+    console.log("Blockly Search: getBlockText - Block is null");
+    return '';
+  }
 
   let text = block.type || ''; // Start with the block type
+  console.log(`Blockly Search: getBlockText - Block type: ${block.type}, Block ID: ${block.id}`);
 
   // Add text from input fields
   if (block.inputList) {
@@ -39,7 +44,9 @@ function getBlockText(block) {
 
   // Add comment text if available
   if (block.getCommentText && block.getCommentText()) {
-      text += ' ' + block.getCommentText();
+      const commentText = block.getCommentText();
+      text += ' ' + commentText;
+      console.log(`Blockly Search: getBlockText - Comment text: ${commentText}`);
   }
 
   return text.toLowerCase().trim();
@@ -108,8 +115,10 @@ function searchAndHighlightBlocks(query) {
   allBlocks.forEach(block => {
     const blockText = getBlockText(block);
     const isMatch = lowerCaseQuery && blockText.includes(lowerCaseQuery);
+    console.log(`Blockly Search: searchAndHighlightBlocks - Block text: ${blockText}, Query: ${lowerCaseQuery}, Is match: ${isMatch}`);
 
     highlightBlock(block, isMatch);
+    console.log(`Blockly Search: highlightBlock called with isMatch: ${isMatch}`);
 
     if (isMatch) {
       matchCount++;
@@ -118,6 +127,7 @@ function searchAndHighlightBlocks(query) {
       }
     }
   });
+  console.log(`Blockly Search: searchAndHighlightBlocks - Match count: ${matchCount}`);
 
   // Scroll to the first match, if any
   if (firstMatch) {
