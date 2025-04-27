@@ -5,14 +5,20 @@ console.log("Blockly Search content script loaded.");
 
 // Safely get the main Blockly workspace
 function getWorkspace() {
-  // App Inventor might have Blockly under different global structures
-  if (typeof Blockly !== 'undefined' && Blockly.getMainWorkspace) {
-    console.log("Blockly Search: Found Blockly.getMainWorkspace()");
-    return Blockly.getMainWorkspace();
-  }
-  // Add checks for other potential global names if needed (e.g., for older AI versions)
-  console.warn("Blockly Search: Could not find Blockly.getMainWorkspace().");
-  return null;
+  return new Promise((resolve) => {
+    const checkBlockly = () => {
+      // App Inventor might have Blockly under different global structures
+      if (typeof Blockly !== 'undefined' && Blockly.getMainWorkspace) {
+        console.log("Blockly Search: Found Blockly.getMainWorkspace()");
+        resolve(Blockly.getMainWorkspace());
+      } else {
+        // Add checks for other potential global names if needed (e.g., for older AI versions)
+        console.warn("Blockly Search: Could not find Blockly.getMainWorkspace(). Retrying...");
+        setTimeout(checkBlockly, 500); // Check every 500ms
+      }
+    };
+    checkBlockly();
+  });
 }
 
 // Get searchable text from a block
@@ -93,8 +99,8 @@ function scrollBlockIntoView(block) {
 
 // --- Main Search Logic ---
 
-function searchAndHighlightBlocks(query) {
-  const workspace = getWorkspace();
+async function searchAndHighlightBlocks(query) {
+  const workspace = await getWorkspace();
   if (!workspace) {
     console.error("Blockly Search: Workspace not found.");
     return { matchCount: 0 };
@@ -144,10 +150,10 @@ function searchAndHighlightBlocks(query) {
 
 // --- Message Listener ---
 
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
   console.log("Blockly Search: Message received", msg);
   if (msg.action === 'searchBlocks') {
-    const result = searchAndHighlightBlocks(msg.text);
+    const result = await searchAndHighlightBlocks(msg.text);
     // Send back the match count (or other data) if needed
     sendResponse({ status: 'Search processed', matches: result.matchCount });
     return true; // Indicates an asynchronous response (optional but good practice)
