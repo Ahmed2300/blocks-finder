@@ -77,7 +77,8 @@ const validUrls = ["*://*.appinventor.mit.edu/*", "*://ai2.appinventor.mit.edu/*
         console.log("Blockly Search: Active tab URL:", tabUrl);
 
         const urlIsValid = validUrls.some((validUrl) => {
-          return new RegExp(validUrl.replace(/\*/g, '.*') + '.*').test(tabUrl);
+          const baseUrl = validUrl.replace(/\*/g, '.*').slice(0, -2); // Remove '/*' from the end
+          return tabUrl.startsWith(baseUrl);
         });
 
         if(!urlIsValid){
